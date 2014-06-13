@@ -45,11 +45,11 @@ def grab_m4a(url):
     result = requests.get(url)
     urls = re.findall(r'href=[\'"]?([^\'">]+)', result.text)
     for url in urls:
-        if (get_extension_url(url) == '.mp3' and ('320kbps' in url)):
+        if (get_extension_url(url) == '.mp3' and (('320kbps' in url) or ('128kbps'))):
             m4a_url = check_m4a(url)
             if (m4a_url != None):
                 download_file(m4a_url)
-            else:
+            else:                
                 download_file(url)
 
 def unique(seq):
