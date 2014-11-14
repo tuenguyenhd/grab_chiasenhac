@@ -11,6 +11,7 @@ import time
 import os
 from urlparse import urlparse
 from os.path import splitext, basename
+from subprocess import call
 
 def check_m4a(url):
     url = url.replace('[MP3%20320kbps].mp3', '[M4A%20500kbps].m4a')
@@ -28,7 +29,7 @@ def download_file(url):
     url2=urllib.unquote(url).decode('utf8')     
     local_filename = url2.split('/')[-1]    
     # NOTE the stream=True parameter
-    r = requests.get(url, stream=True)
+    r = requests.get(url)
     with open(local_filename, 'wb') as f:
         for chunk in r.iter_content(chunk_size=1024): 
             if chunk: # filter out keep-alive new chunks
@@ -45,11 +46,11 @@ def grab_m4a(url):
     result = requests.get(url)
     urls = re.findall(r'href=[\'"]?([^\'">]+)', result.text)
     for url in urls:
-        if (get_extension_url(url) == '.mp3' and (('320kbps' in url) or ('128kbps'))):
+        if (get_extension_url(url) == '.mp3' and ('320kbps' in url)):
             m4a_url = check_m4a(url)
             if (m4a_url != None):
                 download_file(m4a_url)
-            else:                
+            else:           
                 download_file(url)
 
 def unique(seq):
